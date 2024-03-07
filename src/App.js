@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+const LocationSearch = () => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSearch = () => {
+    const apiKey = "";
+    const apiUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${apiKey}`;
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        setResults(data.results);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input
+        type="text"
+        placeholder="Enter location"
+        value={query}
+        onChange={handleInputChange}
+      />
+      <button onClick={handleSearch}>Search</button>
+
+      <ul>
+        {results.map((result) => (
+          <li key={result.place_id}>{result.name}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default App;
+export default LocationSearch;
